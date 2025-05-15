@@ -68,11 +68,11 @@ export default function RegisterPage() {
 
   return (
     <MainLayout>
-      <div className="container flex items-center justify-center py-16 md:py-24">
-        <Card className="w-full max-w-md">
+      <div className="container flex items-center justify-center py-8 px-4 sm:px-6 min-h-[70vh]">
+        <Card className="w-full max-w-md shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl sm:text-3xl font-bold tracking-tight">Create an account</CardTitle>
+            <CardDescription className="text-base text-muted-foreground">
               Enter your details to create a new account
             </CardDescription>
           </CardHeader>
@@ -92,6 +92,8 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  className="h-11 text-base"
+                  autoComplete="name"
                 />
               </div>
               <div className="space-y-2">
@@ -104,6 +106,8 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  className="h-11 text-base"
+                  autoComplete="email"
                 />
               </div>
               <div className="space-y-2">
@@ -117,6 +121,8 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   required
                   minLength={8}
+                  className="h-11 text-base"
+                  autoComplete="new-password"
                 />
                 <p className="text-xs text-muted-foreground">
                   Password must be at least 8 characters long
@@ -132,11 +138,13 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  className="h-11 text-base"
+                  autoComplete="new-password"
                 />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full h-11 min-w-[44px] px-4 text-base font-semibold" disabled={isLoading}>
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
               <div className="text-center text-sm text-muted-foreground">

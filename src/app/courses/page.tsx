@@ -31,9 +31,9 @@ export default async function CoursesPage() {
 
   return (
     <MainLayout>
-      <div className="container py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Courses</h1>
+      <div className="container py-8 px-4 sm:px-6">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Courses</h1>
           <div className="flex items-center gap-4">
             <p className="text-sm text-muted-foreground">
               Showing {courses.length} courses
@@ -42,9 +42,9 @@ export default async function CoursesPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" className="rounded-full">
+            <Button variant="outline" size="sm" className="rounded-full h-10 min-w-[44px] px-4">
               All Courses
             </Button>
             {categories.map((category) => (
@@ -52,7 +52,7 @@ export default async function CoursesPage() {
                 key={category.id}
                 variant="outline"
                 size="sm"
-                className="rounded-full"
+                className="rounded-full h-10 min-w-[44px] px-4"
               >
                 {category.name}
               </Button>
@@ -69,13 +69,13 @@ export default async function CoursesPage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {courses.map((course) => (
-              <Card key={course.id} className="overflow-hidden">
-                <div className="aspect-video w-full bg-muted"></div>
+              <Card key={course.id} className="overflow-hidden transition-shadow hover:shadow-lg focus-within:shadow-lg">
+                <div className="aspect-video w-full bg-muted" />
                 <CardHeader>
-                  <CardTitle className="line-clamp-1">{course.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">
+                  <CardTitle className="line-clamp-1 text-lg font-semibold">{course.title}</CardTitle>
+                  <CardDescription className="line-clamp-2 text-sm">
                     {course.description}
                   </CardDescription>
                 </CardHeader>
@@ -94,7 +94,7 @@ export default async function CoursesPage() {
                 <CardFooter className="flex items-center justify-between">
                   <div className="text-lg font-bold">${Number(course.price).toFixed(2)}</div>
                   <Link href={`/courses/${course.id}`}>
-                    <Button>View Course</Button>
+                    <Button className="h-11 min-w-[44px] px-4">View Course</Button>
                   </Link>
                 </CardFooter>
               </Card>

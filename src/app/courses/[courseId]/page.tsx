@@ -90,13 +90,13 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   return (
     <MainLayout>
-      <div className="container py-10">
-        <div className="mb-8 grid gap-8 md:grid-cols-3">
+      <div className="container py-8 px-4 sm:px-6">
+        {/* Responsive grid: 1 col on mobile, 3 cols on md+ */}
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Course Main Info */}
           <div className="col-span-2 space-y-6">
-            <h1 className="text-3xl font-bold">{course.title}</h1>
-            
-            <div className="flex flex-wrap gap-2">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">{course.title}</h1>
+            <div className="flex flex-wrap gap-2 mb-2">
               {course.categories.map(({ category }) => (
                 <span
                   key={category.id}
@@ -106,12 +106,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 </span>
               ))}
             </div>
-            
-            <div className="aspect-video w-full rounded-lg bg-muted"></div>
-            
+            <div className="aspect-video w-full rounded-lg bg-muted" />
             <div className="prose max-w-none">
-              <h2 className="text-xl font-bold">About this course</h2>
-              <p>{course.description}</p>
+              <h2 className="text-lg sm:text-xl font-semibold mb-2">About this course</h2>
+              <p className="text-base text-muted-foreground">{course.description}</p>
             </div>
           </div>
 
@@ -119,7 +117,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
           <div className="col-span-1">
             <Card className="sticky top-6">
               <CardHeader>
-                <CardTitle>Course Details</CardTitle>
+                <CardTitle className="text-lg font-semibold">Course Details</CardTitle>
                 <CardDescription>
                   {course.lessons.length} lessons
                 </CardDescription>
@@ -148,11 +146,11 @@ export default async function CoursePage({ params }: CoursePageProps) {
               <CardFooter>
                 {isEnrolled ? (
                   <Link href={`/learn/${courseId}`} className="w-full">
-                    <Button className="w-full">Continue Learning</Button>
+                    <Button className="w-full h-11 min-w-[44px] px-4">Continue Learning</Button>
                   </Link>
                 ) : (
-                  <form action={handleEnrollment}>
-                    <Button type="submit" className="w-full">
+                  <form action={handleEnrollment} className="w-full">
+                    <Button type="submit" className="w-full h-11 min-w-[44px] px-4">
                       {Number(course.price) === 0
                         ? "Enroll for Free"
                         : `Enroll for $${Number(course.price).toFixed(2)}`}
@@ -166,21 +164,21 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
         {/* Course Curriculum */}
         <div className="mt-12">
-          <h2 className="mb-4 text-2xl font-bold">Course Curriculum</h2>
+          <h2 className="mb-4 text-xl sm:text-2xl font-bold tracking-tight">Course Curriculum</h2>
           <div className="space-y-4">
             {course.lessons.map((lesson, index) => (
-              <Card key={lesson.id}>
+              <Card key={lesson.id} className="focus-within:shadow-lg">
                 <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <CardTitle className="text-base sm:text-lg font-semibold">
                       {index + 1}. {lesson.title}
                     </CardTitle>
                     {isEnrolled ? (
                       <Link href={`/learn/${courseId}/lessons/${lesson.id}`}>
-                        <Button variant="outline" size="sm">Start</Button>
+                        <Button variant="outline" size="sm" className="h-10 min-w-[44px] px-4">Start</Button>
                       </Link>
                     ) : (
-                      <Button variant="outline" size="sm" disabled>
+                      <Button variant="outline" size="sm" className="h-10 min-w-[44px] px-4" disabled>
                         Locked
                       </Button>
                     )}

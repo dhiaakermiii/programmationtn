@@ -14,47 +14,47 @@ export default async function DashboardPage() {
 
   return (
     <MainLayout>
-      <div className="container py-10">
-        <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
-        
-        <div className="grid gap-6 md:grid-cols-3">
+      <div className="container py-8 px-4 sm:px-6">
+        <h1 className="mb-6 text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
+        {/* Responsive grid: 1 col on mobile, 3 cols on md+ */}
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
           {/* Welcome Card */}
-          <Card className="col-span-3">
+          <Card className="col-span-1 md:col-span-3 focus-within:shadow-lg">
             <CardHeader>
-              <CardTitle>Welcome back, {session.user.name || "User"}</CardTitle>
+              <CardTitle className="text-lg sm:text-2xl font-semibold">Welcome back, {session.user.name || "User"}</CardTitle>
               <CardDescription>
-                Here's an overview of your learning journey
+                Here&apos;s an overview of your learning journey
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p>Your last login was on {new Date().toLocaleDateString()}</p>
+              <p className="text-base text-muted-foreground">Your last login was on {new Date().toLocaleDateString()}</p>
             </CardContent>
           </Card>
 
           {/* Stats Cards */}
-          <Card>
+          <Card className="focus-within:shadow-lg">
             <CardHeader>
-              <CardTitle>My Courses</CardTitle>
-              <CardDescription>Courses you're enrolled in</CardDescription>
+              <CardTitle className="text-base font-semibold">My Courses</CardTitle>
+              <CardDescription>Courses you&apos;re enrolled in</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0</p>
+              <p className="text-3xl font-bold">0</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="focus-within:shadow-lg">
             <CardHeader>
-              <CardTitle>Progress</CardTitle>
+              <CardTitle className="text-base font-semibold">Progress</CardTitle>
               <CardDescription>Your overall learning progress</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0%</p>
+              <p className="text-3xl font-bold">0%</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="focus-within:shadow-lg">
             <CardHeader>
-              <CardTitle>Subscription</CardTitle>
+              <CardTitle className="text-base font-semibold">Subscription</CardTitle>
               <CardDescription>Your current subscription plan</CardDescription>
             </CardHeader>
             <CardContent>
@@ -64,9 +64,9 @@ export default async function DashboardPage() {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="col-span-3">
+          <Card className="col-span-1 md:col-span-3 focus-within:shadow-lg">
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
               <CardDescription>Your latest learning activities</CardDescription>
             </CardHeader>
             <CardContent>
