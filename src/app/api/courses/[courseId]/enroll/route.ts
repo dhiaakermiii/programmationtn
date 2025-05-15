@@ -1,30 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-interface RouteParams {
-  params: {
-    courseId: string;
-  };
-}
-
-export async function POST(request: Request, { params }: RouteParams) {
+// POST to enroll in a course
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { courseId: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
-    const { courseId } = params;
 
     // Check if user is authenticated
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
+    if (!session?.user) {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
-    const userId = session.user.id;
+    const { courseId } = params;
 
-    // Check if course exists
+    // Check if course exists and is published
     const course = await prisma.course.findUnique({
       where: {
         id: courseId,
@@ -33,72 +27,51 @@ export async function POST(request: Request, { params }: RouteParams) {
     });
 
     if (!course) {
-      return NextResponse.json(
-        { message: "Course not found" },
-        { status: 404 }
-      );
+      return NextResponse.redirect(new URL("/courses", req.url));
     }
 
-    // Check if already enrolled
+    // Check if the user already has an enrollment
     const existingEnrollment = await prisma.enrollment.findUnique({
       where: {
         userId_courseId: {
-          userId,
+          userId: session.user.id,
           courseId,
         },
       },
     });
 
     if (existingEnrollment) {
-      return NextResponse.json(
-        { message: "Already enrolled in this course" },
-        { status: 409 }
-      );
+      // User is already enrolled, redirect to course
+      return NextResponse.redirect(new URL(`/learn/${courseId}`, req.url));
     }
 
-    // Check if user has active subscription or if the course is free
-    const hasActiveSubscription = await prisma.subscription.findFirst({
-      where: {
-        userId,
-        status: "ACTIVE",
-      },
-    });
+    // If the course is not free, check if the user has an active subscription
+    if (Number(course.price) > 0) {
+      const subscription = await prisma.subscription.findFirst({
+        where: {
+          userId: session.user.id,
+          status: "ACTIVE",
+        },
+      });
 
-    const isFree = Number(course.price) === 0;
-
-    // If user doesn't have subscription and course isn't free, they need to pay
-    if (!hasActiveSubscription && !isFree) {
-      return NextResponse.json(
-        { message: "Payment required" },
-        { status: 402 }
-      );
+      if (!subscription) {
+        // User doesn't have a subscription, redirect to checkout
+        return NextResponse.redirect(new URL(`/checkout?courseId=${courseId}`, req.url));
+      }
     }
 
-    // Create enrollment
-    const enrollment = await prisma.enrollment.create({
+    // Create an enrollment
+    await prisma.enrollment.create({
       data: {
-        userId,
+        userId: session.user.id,
         courseId,
       },
     });
 
-    return NextResponse.json(
-      { 
-        message: "Successfully enrolled",
-        enrollment
-      },
-      { status: 201 }
-    );
+    // Redirect to the course learning page
+    return NextResponse.redirect(new URL(`/learn/${courseId}`, req.url));
   } catch (error) {
-    console.error("Enrollment error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("[COURSE_ENROLL]", error);
+    return NextResponse.redirect(new URL("/courses", req.url));
   }
-}
-
-// Also support GET requests to redirect from server actions
-export async function GET(request: Request, { params }: RouteParams) {
-  return POST(request, { params });
 } 

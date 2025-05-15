@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
+import { enrollInCourse } from "@/actions/course-enrollment";
+import { CourseImage } from "@/components/courses/course-image";
 
 interface CoursePageProps {
   params: {
@@ -73,21 +75,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
     hasActiveSubscription = !!subscription;
   }
 
-  // Handle enrollment
-  const handleEnrollment = async () => {
-    if (!session) {
-      redirect("/auth/login");
-    }
-
-    // If user has subscription or course is free, they can enroll directly
-    if (hasActiveSubscription || Number(course.price) === 0) {
-      redirect(`/api/courses/${courseId}/enroll`);
-    } else {
-      // Otherwise, redirect to checkout
-      redirect(`/checkout?courseId=${courseId}`);
-    }
-  };
-
   return (
     <MainLayout>
       <div className="container py-8 px-4 sm:px-6">
@@ -106,7 +93,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 </span>
               ))}
             </div>
-            <div className="aspect-video w-full rounded-lg bg-muted" />
+            <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-muted">
+              <CourseImage imageUrl={course.imageUrl} title={course.title} />
+            </div>
             <div className="prose max-w-none">
               <h2 className="text-lg sm:text-xl font-semibold mb-2">About this course</h2>
               <p className="text-base text-muted-foreground">{course.description}</p>
@@ -149,13 +138,13 @@ export default async function CoursePage({ params }: CoursePageProps) {
                     <Button className="w-full h-11 min-w-[44px] px-4">Continue Learning</Button>
                   </Link>
                 ) : (
-                  <form action={handleEnrollment} className="w-full">
-                    <Button type="submit" className="w-full h-11 min-w-[44px] px-4">
+                  <Link href={`/api/courses/${courseId}/enroll`} className="w-full">
+                    <Button className="w-full h-11 min-w-[44px] px-4">
                       {Number(course.price) === 0
                         ? "Enroll for Free"
                         : `Enroll for $${Number(course.price).toFixed(2)}`}
                     </Button>
-                  </form>
+                  </Link>
                 )}
               </CardFooter>
             </Card>
